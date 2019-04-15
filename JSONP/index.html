@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JSONP</title>
+</head>
+<body>
+  动态创建script标签
+
+  <div>余额<span id="acount">&&&acount&&&</span></div>
+  <button id="btn">付款</button>
+
+  <script>
+    btn.addEventListener('click',function(){
+      let script = document.createElement('script')
+      let functionName = 'autumn' + parseInt(Math.random()*100000000)
+      window[functionName] = function(argu){
+        if(argu === 'success'){
+          acount.innerText = (+acount.innerText) - 1
+          alert(argu)
+        }
+      }
+      script.src = `/pay?callback=${functionName}`
+
+      document.body.appendChild(script)
+      script.onload = function(e){
+        e.currentTarget.remove()
+        delete window[functionName]
+      }
+
+      script.onerror = function(e){
+        e.currentTarget.remove()
+        delete window[functionName]
+      }
+    })
+  </script>
+</body>
+</html>
